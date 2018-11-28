@@ -36,8 +36,26 @@ class ImaqDxError(ImaqError):
     def __str__(self):
         return "%s: %s" % (self.code, IMAQdxGetErrorString(self.code))
 
-def RETFUNC(name, restype, *params, out=None, library=_dll,
-        errcheck=None, handle_missing=True):
+def RETFUNC(name, restype, *params, **kwargs):
+    if 'out' in kwargs:
+        out=kwargs['out']
+    else:
+        out=None
+    if 'library' in kwargs:
+        library=kwargs['library']
+    else:
+        library=_dll
+        
+    if 'errcheck' in kwargs:
+        errcheck=kwargs['errcheck']
+    else:
+        errcheck=None
+        
+    if 'handle_missing' in kwargs:
+        handle_missing=kwargs['handle_missing']
+    else:
+        handle_missing=True
+
     prototype = _functype(restype, *tuple(param[1] for param in params))
     paramflags = []
     for param in params:
